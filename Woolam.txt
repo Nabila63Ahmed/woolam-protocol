@@ -26,17 +26,17 @@ Intruder Knowledge :  start i s b a
 Interpreted protocol specification :
 ------------------------------------
 
-Role server played by (a,4):
+Role server played by (a,5):
 | {a.b.U(13).V(13)}_kas.{a.b.U(13).V(13)}_kbs => {b.U(13).V(13).n13(Kab)}_kas.
 |      {a.U(13).V(13).n13(Kab)}_kbs
 
-Role bob played by (b,3):
+Role bob played by (b,4):
 | a.Y(7) => b.n7(Nb)
 | Z(8) => Z(8).{a.b.n8(Y).n8(Nb)}_kbs
 | W(9) => W(9).{Y(9).Nb(9)}_Kab(9)
 |    & Request(b,a,alice_bob_nb,Nb(9));
 
-Role alice played by (a,2):
+Role alice played by (a,3):
 | start => a.n1(Na)
 | b.X(2) => {a.b.n2(Na).X(2)}_kas
 |    & Witness(a,b,alice_bob_nb,X(2));
@@ -64,19 +64,19 @@ Short attack description :
 
  Kind of attack:  Authentication on (b,a,alice_bob_nb,Nb(9))
    Substitution:  []
-  Compact trace:  (b,3) (b,3) (b,3) 
+  Compact trace:  (b,4) (b,4) (b,4) 
 
 
 Detailed attack description :
 -----------------------------
 
- i -> (b,3):  a.Y(7)
- (b,3) -> i:  b.n7(Nb)
+ i -> (b,4):  a.Y(7)
+ (b,4) -> i:  b.n7(Nb)
 
- i -> (b,3):  Z(8)
- (b,3) -> i:  Z(8).{a.b.n8(Y).n8(Nb)}_kbs
+ i -> (b,4):  Z(8)
+ (b,4) -> i:  Z(8).{a.b.n8(Y).n8(Nb)}_kbs
 
- i -> (b,3):  W(9)
- (b,3) -> i:  W(9).{Y(9).Nb(9)}_Kab(9)
+ i -> (b,4):  W(9)
+ (b,4) -> i:  W(9).{Y(9).Nb(9)}_Kab(9)
               & Request(b,a,alice_bob_nb,Nb(9));
 
