@@ -86,9 +86,9 @@ role session(A, B, S : agent,
 
     composition
 
-	      alice(a, b, s, kas, SBA, RBA)
-     /\ bob(a, b, s, kbs, SAB, RAB, SSB, RSB)
-     /\ server(a, b, s, kas, kbs, SBS, RBS)
+	      alice(A, B, S, Kas, SBA, RBA)
+     /\ bob(A, B, S, Kbs, SAB, RAB, SSB, RSB)
+     /\ server(A, B, S, Kas, Kbs, SBS, RBS)
 
 end role
 
