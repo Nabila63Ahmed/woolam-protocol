@@ -17,13 +17,14 @@ played_by A def=
    
     1.  State  = 1 /\ RCV_BA(start) 
     =|> State':= 2 /\ Na' := new() /\ SND_BA(A.Na')
+    /\ witness(A, B, bob_alice_na, Na')
 
     2.  State  = 2 /\ RCV_BA(B.X')
     =|>	State':= 3 /\ SND_BA({A.B.Na'.X'}_Kas)
-      /\ witness(A,B,alice_bob_nb,X')
 
     3.  State = 3 /\ RCV_BA({B.Na'.X'.Kab'}_Kas.{Na'.X'}_Kab')
     =|>	State':= 4 /\ SND_BA({X'}_Kab')
+    /\ request(A, B, bob_alice_nb, X')
 
 end role
 
@@ -46,13 +47,16 @@ played_by B def=
 
     1.  State  = 1 /\ RCV_AB(A.Y')
     =|> State':= 2 /\ Nb' := new() /\ SND_AB(B.Nb')
+    /\ witness(B, A, bob_alice_nb, Nb')
 
     2.  State  = 2 /\ RCV_AB(Z')
     =|> State':= 3 /\ SND_SB(Z'. {A.B.Y'.Nb'}_Kbs)
 
-    3.  State = 3 /\ RCV_SB(W', {A.Y'.Nb'.Kab'}_Kbs)
+    3.  State = 3 /\ RCV_SB(W', {A.Y'.Nb'.Kab'}_Kbs) 
     =|> State':= 4 /\ SND_AB(W'. {Y'.Nb'}_Kab')
-      /\ request(B,A,alice_bob_nb,Nb')
+    /\ request(B, S, bob_server_kab, Kab')
+    /\ request(B, A, bob_alice_na, Y')
+
 
 end role
 
@@ -73,6 +77,7 @@ played_by A def=
    
     1.  State  = 1 /\ RCV_BS({A.B.U'.V'}_Kas.{A.B.U'.V'}_Kbs) 
     =|> State':= 2 /\ Kab' := new() /\ SND_BS({B.U'.V'.Kab'}_Kas.{A.U'.V'.Kab'}_Kbs)
+    /\ witness(S, A, bob_server_kab, Kab')
 
 end role
 
@@ -95,23 +100,23 @@ end role
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 role environment()
   def=
-    const i, a, b, s : agent,
+    const i, a, b1, b2, s : agent,
         kas, kbs : symmetric_key,
-        alice_bob_nb  : protocol_id
+        bob_server_kab, bob_alice_na, bob_alice_nb  : protocol_id
 
     intruder_knowledge = {i, a, b, s}
 
    composition
 
-	      session(a, b, s, kas, kbs)
-    %  /\ session(a, b, i, kas, kbs)
+	      session(a, b1, s, kas, kbs)
+      /\ session(a, b2, s, kas, kbs)
     %  /\ session(i, b, s, kas, kbs)
 
 end role
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 goal
 
-  authentication_on alice_bob_nb
+  authentication_on bob_server_kab, bob_alice_na, bob_alice_nb
 
 end goal
 

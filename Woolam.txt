@@ -6,8 +6,8 @@
   Protocol file: ./WooLam.if
   Attack found : YES
 
-  Analysed   : 13 states
-  Reachable  : 8 states
+  Analysed   : 49 states
+  Reachable  : 29 states
   Translation: 0.00 seconds
   Computation: 0.00 seconds
 
@@ -26,21 +26,43 @@ Intruder Knowledge :  start i s b a
 Interpreted protocol specification :
 ------------------------------------
 
-Role server played by (a,5):
-| {a.b.U(13).V(13)}_kas.{a.b.U(13).V(13)}_kbs => {b.U(13).V(13).n13(Kab)}_kas.
-|      {a.U(13).V(13).n13(Kab)}_kbs
+Role server played by (a,9):
+| {a.b2.U(27).V(27)}_kas.{a.b2.U(27).V(27)}_kbs => {b2.U(27).V(27).n27(Kab)}_kas.
+|      {a.U(27).V(27).n27(Kab)}_kbs
+|    & Witness(s,a,bob_server_kab,n27(Kab));
 
-Role bob played by (b,4):
-| a.Y(7) => b.n7(Nb)
-| Z(8) => Z(8).{a.b.n8(Y).n8(Nb)}_kbs
+Role bob played by (b2,8):
+| a.Y(21) => b2.n21(Nb)
+|    & Witness(b2,a,bob_alice_nb,n21(Nb));
+| Z(22) => Z(22).{a.b2.n22(Y).n22(Nb)}_kbs
+| W(23) => W(23).{Y(23).Nb(23)}_Kab(23)
+|    & Request(b2,a,bob_alice_na,Y(23));  Request(b2,s,bob_server_kab,Kab(23));
+
+Role alice played by (a,7):
+| start => a.n15(Na)
+|    & Witness(a,b2,bob_alice_na,n15(Na));
+| b2.X(16) => {a.b2.n16(Na).X(16)}_kas
+| {b2.Na(17).X(17).Kab(17)}_kas.{Na(17).X(17)}_Kab(17) => {X(17)}_Kab(17)
+|    & Request(a,b2,bob_alice_nb,X(17));
+
+Role server played by (a,5):
+| {a.b1.U(13).V(13)}_kas.{a.b1.U(13).V(13)}_kbs => {b1.U(13).V(13).n13(Kab)}_kas.
+|      {a.U(13).V(13).n13(Kab)}_kbs
+|    & Witness(s,a,bob_server_kab,n13(Kab));
+
+Role bob played by (b1,4):
+| a.Y(7) => b1.n7(Nb)
+|    & Witness(b1,a,bob_alice_nb,n7(Nb));
+| Z(8) => Z(8).{a.b1.n8(Y).n8(Nb)}_kbs
 | W(9) => W(9).{Y(9).Nb(9)}_Kab(9)
-|    & Request(b,a,alice_bob_nb,Nb(9));
+|    & Request(b1,a,bob_alice_na,Y(9));  Request(b1,s,bob_server_kab,Kab(9));
 
 Role alice played by (a,3):
 | start => a.n1(Na)
-| b.X(2) => {a.b.n2(Na).X(2)}_kas
-|    & Witness(a,b,alice_bob_nb,X(2));
-| {b.Na(3).X(3).Kab(3)}_kas.{Na(3).X(3)}_Kab(3) => {X(3)}_Kab(3)
+|    & Witness(a,b1,bob_alice_na,n1(Na));
+| b1.X(2) => {a.b1.n2(Na).X(2)}_kas
+| {b1.Na(3).X(3).Kab(3)}_kas.{Na(3).X(3)}_Kab(3) => {X(3)}_Kab(3)
+|    & Request(a,b1,bob_alice_nb,X(3));
 
 
 Some Remarks :
@@ -62,21 +84,23 @@ Some Remarks :
 Short attack description :
 --------------------------
 
- Kind of attack:  Authentication on (b,a,alice_bob_nb,Nb(9))
+ Kind of attack:  Authentication on (b2,a,bob_alice_na,Y(23))
    Substitution:  []
-  Compact trace:  (b,4) (b,4) (b,4) 
+  Compact trace:  (b2,8) (b2,8) (b2,8) 
 
 
 Detailed attack description :
 -----------------------------
 
- i -> (b,4):  a.Y(7)
- (b,4) -> i:  b.n7(Nb)
+ i -> (b2,8):  a.Y(21)
+ (b2,8) -> i:  b2.n21(Nb)
+               & Witness(b2,a,bob_alice_nb,n21(Nb));
 
- i -> (b,4):  Z(8)
- (b,4) -> i:  Z(8).{a.b.n8(Y).n8(Nb)}_kbs
+ i -> (b2,8):  Z(22)
+ (b2,8) -> i:  Z(22).{a.b2.n22(Y).n22(Nb)}_kbs
 
- i -> (b,4):  W(9)
- (b,4) -> i:  W(9).{Y(9).Nb(9)}_Kab(9)
-              & Request(b,a,alice_bob_nb,Nb(9));
+ i -> (b2,8):  W(23)
+ (b2,8) -> i:  W(23).{Y(23).Nb(23)}_Kab(23)
+               & Request(b2,a,bob_alice_na,Y(23));
+               & Request(b2,s,bob_server_kab,Kab(23));
 
