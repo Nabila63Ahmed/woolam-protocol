@@ -52,7 +52,7 @@ played_by B def=
     2.  State  = 2 /\ RCV_AB(Z')
     =|> State':= 3 /\ SND_SB(Z'. {A.B.Y'.Nb'}_Kbs)
 
-    3.  State = 3 /\ RCV_SB(W', {A.Y'.Nb'.Kab'}_Kbs) 
+    3.  State = 3 /\ RCV_SB(W'. {A.Y'.Nb'.Kab'}_Kbs) 
     =|> State':= 4 /\ SND_AB(W'. {Y'.Nb'}_Kab')
     /\ request(B, S, bob_server_kab, Kab')
     /\ request(B, A, bob_alice_na, Y')
@@ -110,7 +110,6 @@ role environment()
 
 	      session(a, b1, s, kas, kbs)
       /\ session(a, b2, s, kas, kbs)
-    %  /\ session(i, b, s, kas, kbs)
 
 end role
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
