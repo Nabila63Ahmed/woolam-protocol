@@ -65,7 +65,7 @@ end role
 role server(A, B, S     : agent,
             Kas, Kbs   : symmetric_key,
             SND_BS, RCV_BS : channel (dy))
-played_by A def=
+played_by S def=
 
   local State : nat,
         U, V : text,
@@ -100,7 +100,7 @@ end role
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 role environment()
   def=
-    const i, a, b1, b2, s : agent,
+    const i, a, b, s : agent,
         kas, kbs : symmetric_key,
         bob_server_kab, bob_alice_na, bob_alice_nb  : protocol_id
 
@@ -108,8 +108,8 @@ role environment()
 
    composition
 
-	      session(a, b1, s, kas, kbs)
-      /\ session(a, b2, s, kas, kbs)
+	      session(a, b, s, kas, kbs)
+      /\ session(a, b, s, kas, kbs)
 
 end role
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
