@@ -1,0 +1,79 @@
+
+----------------
+  AtSe Summary  
+----------------
+
+  Protocol file: ./WooLam-fixed.if
+  Attack found : NO
+
+  Analysed   : 44190 states
+  Reachable  : 7364 states
+  Translation: 0.00 seconds
+  Computation: 0.50 seconds
+
+
+---------------------------------------------
+            Internal System State            
+  (initial state after reading the if file)  
+---------------------------------------------
+
+Intruder state :
+----------------
+
+Intruder Knowledge :  start i s b a 
+
+
+Interpreted protocol specification :
+------------------------------------
+
+Role server played by (s,9):
+| {{a.b.U(27).V(27)}_kas.a.b.U(27).V(27)}_kbs
+|   => {{b.U(27).V(27).n27(Kab)}_kas.{a.U(27).V(27).n27(Kab)}_kbs}_kbs
+|    & Secret(n27(Kab),set_104);  Witness(s,a,bob_server_kab,n27(Kab));
+|    & Add a to set_104;  Add b to set_104;  Add s to set_104;
+
+Role bob played by (b,8):
+| a.Y(21) => b.n21(Nb)
+|    & Witness(b,a,bob_alice_nb,n21(Nb));
+| Z(22) => {Z(22).a.b.n22(Y).n22(Nb)}_kbs
+| {W(23).{a.Y(23).Nb(23).Kab(23)}_kbs}_kbs => W(23).{Y(23).Nb(23)}_Kab(23)
+|    & Request(b,a,bob_alice_na,Y(23));  Request(b,s,bob_server_kab,Kab(23));
+
+Role alice played by (a,7):
+| start => a.n15(Na)
+|    & Witness(a,b,bob_alice_na,n15(Na));
+| b.X(16) => {a.b.n16(Na).X(16)}_kas
+| {b.Na(17).X(17).Kab(17)}_kas.{Na(17).X(17)}_Kab(17) => {X(17)}_Kab(17)
+|    & Request(a,b,bob_alice_nb,X(17));
+
+Role server played by (s,5):
+| {{a.b.U(13).V(13)}_kas.a.b.U(13).V(13)}_kbs
+|   => {{b.U(13).V(13).n13(Kab)}_kas.{a.U(13).V(13).n13(Kab)}_kbs}_kbs
+|    & Secret(n13(Kab),set_96);  Witness(s,a,bob_server_kab,n13(Kab));
+|    & Add a to set_96;  Add b to set_96;  Add s to set_96;
+
+Role bob played by (b,4):
+| a.Y(7) => b.n7(Nb)
+|    & Witness(b,a,bob_alice_nb,n7(Nb));
+| Z(8) => {Z(8).a.b.n8(Y).n8(Nb)}_kbs
+| {W(9).{a.Y(9).Nb(9).Kab(9)}_kbs}_kbs => W(9).{Y(9).Nb(9)}_Kab(9)
+|    & Request(b,a,bob_alice_na,Y(9));  Request(b,s,bob_server_kab,Kab(9));
+
+Role alice played by (a,3):
+| start => a.n1(Na)
+|    & Witness(a,b,bob_alice_na,n1(Na));
+| b.X(2) => {a.b.n2(Na).X(2)}_kas
+| {b.Na(3).X(3).Kab(3)}_kas.{Na(3).X(3)}_Kab(3) => {X(3)}_Kab(3)
+|    & Request(a,b,bob_alice_nb,X(3));
+
+
+Some Remarks :
+--------------
+
+- The syntax of protocol steps is
+   "Received Msg" => "Sent Msg"  [Equalities] & Inequalities & IF facts
+- A Role is a tree where steps are unary nodes and choice points are n-ary nodes
+- The Initial System state is the state of cl-atse at the begining of the search
+  for attacks, and represents both the intruder and honest participants state.
+- See the cl-atse's subsection in the user-manual for more details.
+
