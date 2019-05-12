@@ -1,0 +1,126 @@
+%% PROTOCOL: WL: Woo-Lam Mutual Authentiction Protocol
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%HLPSL:
+
+role alice(A, B, S     : agent,
+               Kas   : symmetric_key,
+               SND_BA, RCV_BA : channel (dy))
+played_by A def=
+
+  local State : nat,
+        Na, X : text,
+        Kab: symmetric_key
+
+  init State := 1
+
+  transition
+   
+    1.  State  = 1 /\ RCV_BA(start) 
+    =|> State':= 2 /\ Na' := new() /\ SND_BA(A.Na')
+    /\ witness(A, B, bob_alice_na, Na')
+
+    2.  State  = 2 /\ RCV_BA(B.X')
+    =|>	State':= 3 /\ SND_BA({A.B.Na'.X'}_Kas)
+
+    3.  State = 3 /\ RCV_BA({B.Na'.X'.Kab'}_Kas.{Na'.X'}_Kab')
+    =|>	State':= 4 /\ SND_BA({X'}_Kab')
+    /\ request(A, B, bob_alice_nb, X')
+
+end role
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+role bob(A, B, S      : agent,
+               Kbs   : symmetric_key,
+               SND_AB, RCV_AB, SND_SB, RCV_SB  : channel (dy)) 
+played_by B def=
+
+  local State : nat,
+	Nb, Y : text,
+  Z: {agent.agent.text.text}_symmetric_key, 
+  W: {agent.text.text.symmetric_key}_symmetric_key,
+  Kab: symmetric_key
+
+  init State := 1
+
+  transition 
+
+    1.  State  = 1 /\ RCV_AB(A.Y')
+    =|> State':= 2 /\ Nb' := new() /\ SND_AB(B.Nb')
+    /\ witness(B, A, bob_alice_nb, Nb')
+
+    2.  State  = 2 /\ RCV_AB(Z')
+    =|> State':= 3 /\ SND_SB({Z'.A.B.Y'.Nb'}_Kbs)
+
+    3.  State = 3 /\ RCV_SB({W'. {A.Y'.Nb'.Kab'}_Kbs}_Kbs) 
+    =|> State':= 4 /\ SND_AB(W'. {Y'.Nb'}_Kab')
+    /\ request(B, S, bob_server_kab, Kab')
+    /\ request(B, A, bob_alice_na, Y')
+
+
+end role
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+role server(A, B, S     : agent,
+            Kas, Kbs   : symmetric_key,
+            SND_BS, RCV_BS : channel (dy))
+played_by S def=
+
+  local State : nat,
+        U, V : text,
+        Kab: symmetric_key
+
+  init State := 1
+
+  transition
+   
+    1.  State  = 1 /\ RCV_BS({{A.B.U'.V'}_Kas.A.B.U'.V'}_Kbs) 
+    =|> State':= 2 /\ Kab' := new() /\ SND_BS({{B.U'.V'.Kab'}_Kas.{A.U'.V'.Kab'}_Kbs}_Kbs)
+    /\ witness(S, A, bob_server_kab, Kab')
+    /\ secret(Kab', k, {A, B, S})
+
+end role
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+role session(A, B, S : agent,
+		Kas, Kbs: symmetric_key)
+    def=
+
+    local SAB, SBA, SBS, SSB, RAB, RBA, RBS, RSB : channel (dy)
+
+    composition
+
+	      alice(A, B, S, Kas, SBA, RBA)
+     /\ bob(A, B, S, Kbs, SAB, RAB, SSB, RSB)
+     /\ server(A, B, S, Kas, Kbs, SBS, RBS)
+
+end role
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+role environment()
+  def=
+    const i, a, b, s : agent,
+        kas, kbs: symmetric_key,
+        k, bob_server_kab, bob_alice_na, bob_alice_nb  : protocol_id
+
+    intruder_knowledge = {i, a, b, s}
+
+   composition
+
+	      session(a, b, s, kas, kbs)
+      /\ session(a, b, s,  kas, kbs)
+
+end role
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+goal
+
+  authentication_on bob_server_kab, bob_alice_na, bob_alice_nb
+  secrecy_of k
+end goal
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+environment()
+  
